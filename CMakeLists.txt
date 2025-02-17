@@ -128,7 +128,7 @@ if (VULKAN_HPP_NO_SPACESHIP_OPERATOR)
 	target_compile_definitions(Vulkan-Hpp INTERFACE "VULKAN_HPP_NO_SPACESHIP_OPERATOR")
 endif()
 
-if (VULKAN_HEADERS_ENABLE_MODULE)
+if (VULKAN_HPP_ENABLE_MODULE)
     # check for compiler support
     if ((CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" AND (MSVC_VERSION GREATER_EQUAL "1941")) OR
         # clang-cl doesn't currently support modules
@@ -139,7 +139,7 @@ if (VULKAN_HEADERS_ENABLE_MODULE)
         (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "14.0")
     )
         # check for CMake support
-        if(VULKAN_HPP_ENABLE_STD_MODULE AND CMAKE_VERSION VERSION_LESS "3.30")
+        if(VULKAN_HPP_ENABLE_MODULE_STD AND CMAKE_VERSION VERSION_LESS "3.30")
             message(FATAL_ERROR "Vulkan-Hpp: C++20 module with import std requires CMake 3.30 or later")
         elseif (CMAKE_VERSION VERSION_LESS "3.28")
             message(FATAL_ERROR "Vulkan-Hpp: C++20 module requires CMake 3.28 or later")
@@ -154,7 +154,7 @@ if (VULKAN_HEADERS_ENABLE_MODULE)
         set_target_properties(Vulkan-HppModule PROPERTIES
             CXX_STANDARD_REQUIRED ON # CXX version is a hard requirement for modules
             CXX_EXTENSIONS OFF) # Clang's module support can be broken with extensions enabled
-        if (VULKAN_HPP_ENABLE_STD_MODULE)
+        if (VULKAN_HPP_ENABLE_MODULE_STD)
             target_compile_features(uses_std
                 PRIVATE   cxx_std_23
                 INTERFACE cxx_std_20) # only C++20 is required to consume this module
