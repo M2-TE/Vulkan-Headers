@@ -158,9 +158,9 @@ if (VULKAN_HPP_ENABLE_MODULE)
             target_compile_features(uses_std
                 PRIVATE   cxx_std_23
                 INTERFACE cxx_std_20) # only C++20 is required to consume this module
-            set_target_properties(VulkanHppModule PROPERTIES CXX_MODULE_STD ON)
+            set_target_properties(Vulkan-HppModule PROPERTIES CXX_MODULE_STD ON)
         else()
-            target_compile_features(VulkanHppModule PUBLIC cxx_std_20)
+            target_compile_features(Vulkan-HppModule PUBLIC cxx_std_20)
         endif()
         target_link_libraries(Vulkan-Module PUBLIC Vulkan::Hpp)
     else()
