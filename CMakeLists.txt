@@ -42,6 +42,28 @@ add_library(Vulkan-Headers INTERFACE)
 add_library(Vulkan::Headers ALIAS Vulkan-Headers)
 target_include_directories(Vulkan-Headers INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>)
 
+option(VULKAN_HEADERS_ENABLE_TESTS "Test Vulkan-Headers" ${PROJECT_IS_TOP_LEVEL})
+option(VULKAN_HEADERS_ENABLE_INSTALL "Install Vulkan-Headers" ${PROJECT_IS_TOP_LEVEL})
+option(VULKAN_HEADERS_ENABLE_MODULE "Enables building of the Vulkan C++ module" OFF)
+option(VK_NO_PROTOTYPES "Remove prototypes" OFF)
+# options for Vulkan-Hpp compile definitions (see https://github.com/KhronosGroup/Vulkan-Hpp/tree/main?tab=readme-ov-file#configuration-options for details)
+option(VULKAN_HPP_DISABLE_ENHANCED_MODE "Disable all enhanced functionality apart from scoped enums, bitmasks, default initialization and vk::StructureChain" OFF)
+option(VULKAN_HPP_DISPATCH_LOADER_DYNAMIC "Select the dynamic (ON) or static (OFF) dispatch loader (defaults to VK_NO_PROTOTYPES)" ${VK_NO_PROTOTYPES})
+option(VULKAN_HPP_FLAGS_MASK_TYPE_AS_PUBLIC "Change the m_mask access modifier in vk::Flags to public" OFF)
+option(VULKAN_HPP_HANDLES_MOVE_EXCHANGE "Enable 'm_handle = exchange( rhs.m_handle, {} )' in move constructors" OFF)
+option(VULKAN_HPP_NO_CONSTRUCTORS "Remove constructors from structs and unions to enable C++20 designated initializers" OFF)
+option(VULKAN_HPP_NO_EXCEPTIONS "Do not throw exceptions when vulkan functions return an error code" OFF)
+option(VULKAN_HPP_NO_NODISCARD_WARNINGS "Remove C++17 [[nodiscard]] from function signatures that return something" OFF)
+option(VULKAN_HPP_NO_SETTERS "Remove setters for structs and unions" OFF)
+option(VULKAN_HPP_NO_SMART_HANDLE "Remove the vk::UniqueHandle helper class" OFF)
+option(VULKAN_HPP_NO_SPACESHIP_OPERATOR "Remove the C++20 <=> (spaceship) operator" OFF)
+option(VULKAN_HPP_NO_TO_STRING "Remove inclusion of vulkan_to_string.hpp from vulkan.hpp" OFF)
+option(VULKAN_HPP_NO_WIN32_PROTOTYPES "Remove HINSTANCE, LoadLibraryA and other symbols, which are declared if VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL is enabled on Win32" OFF)
+option(VULKAN_HPP_RAII_NO_EXCEPTIONS "Do not throw exceptions when vulkan functions from vk::raii return an error code." OFF)
+option(VULKAN_HPP_SMART_HANDLE_IMPLICIT_CAST "Enable implicit casts from vk::UniqueHandle and vk::SharedHandle to their matching vk::Handle" OFF)
+option(VULKAN_HPP_TYPESAFE_CONVERSION "Enable copy constructors for non-dispatchable handles" ON)
+option(VULKAN_HPP_USE_REFLECT "Adds reflect function to structures, which returns an iterable tuple" OFF)
+
 if ((CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" AND (MSVC_VERSION GREATER_EQUAL "1941")) OR
     # clang-cl doesn't currently support modules
     (CMAKE_CXX_COMPILER_ID STREQUAL "Clang"
@@ -51,9 +73,6 @@ if ((CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" AND (MSVC_VERSION GREATER_EQUAL "1941
     (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "14.0"))
     set(COMPILER_SUPPORTS_CXX_MODULES TRUE)
 endif()
-
-option(VULKAN_HEADERS_ENABLE_MODULE "Enables building of the Vulkan C++ module" OFF)
-
 if (VULKAN_HEADERS_ENABLE_MODULE AND (NOT COMPILER_SUPPORTS_CXX_MODULES OR CMAKE_VERSION VERSION_LESS "3.28"))
     message(WARNING "Vulkan C++ module support is requested but was disabled due to lacking support on this platform")
 endif()
@@ -71,9 +90,6 @@ if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.28" AND VULKAN_HEADERS_ENABLE_MODULE 
     target_compile_features(Vulkan-Module PUBLIC cxx_std_20)
     target_link_libraries(Vulkan-Module PUBLIC Vulkan-Headers)
 endif ()
-
-option(VULKAN_HEADERS_ENABLE_TESTS "Test Vulkan-Headers" ${PROJECT_IS_TOP_LEVEL})
-option(VULKAN_HEADERS_ENABLE_INSTALL "Install Vulkan-Headers" ${PROJECT_IS_TOP_LEVEL})
 
 if (VULKAN_HEADERS_ENABLE_TESTS)
     enable_testing() # This is only effective in the top level CMakeLists.txt file.
