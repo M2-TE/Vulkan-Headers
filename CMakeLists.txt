@@ -71,12 +71,14 @@ if (VULKAN_HEADERS_ENABLE_MODULE)
         add_library(Vulkan::HppModule ALIAS Vulkan-HppModule)
         target_sources(Vulkan-HppModule
             PUBLIC
-            FILE_SET module TYPE CXX_MODULES FILES "${CMAKE_CURRENT_SOURCE_DIR}/include/vulkan/vulkan.cppm")
+            FILE_SET module
+            TYPE CXX_MODULES
+            FILES "${CMAKE_CURRENT_SOURCE_DIR}/include/vulkan/vulkan.cppm")
         set_target_properties(Vulkan-HppModule PROPERTIES
             CXX_STANDARD_REQUIRED ON # CXX version is a hard requirement for modules
             CXX_EXTENSIONS OFF) # Clang's module support can be broken with extensions enabled
         if (VULKAN_HEADERS_ENABLE_MODULE_STD)
-            target_compile_features(uses_std
+            target_compile_features(Vulkan-HppModule
                 PRIVATE   cxx_std_23
                 INTERFACE cxx_std_20) # only C++20 is required to consume this module
             set_target_properties(Vulkan-HppModule PROPERTIES CXX_MODULE_STD ON)
