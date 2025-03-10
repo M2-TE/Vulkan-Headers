@@ -74,9 +74,6 @@ if (VULKAN_HEADERS_ENABLE_MODULE)
             FILE_SET module
             TYPE CXX_MODULES
             FILES "${CMAKE_CURRENT_SOURCE_DIR}/include/vulkan/vulkan.cppm")
-        set_target_properties(Vulkan-HppModule PROPERTIES
-            CXX_STANDARD_REQUIRED ON # CXX version is a hard requirement for modules
-            CXX_EXTENSIONS OFF) # Clang's module support can be broken with extensions enabled
         if (VULKAN_HEADERS_ENABLE_MODULE_STD)
             target_compile_features(Vulkan-HppModule
                 PRIVATE   cxx_std_23
@@ -86,6 +83,11 @@ if (VULKAN_HEADERS_ENABLE_MODULE)
             target_compile_features(Vulkan-HppModule PUBLIC cxx_std_20)
         endif()
         target_link_libraries(Vulkan-HppModule PUBLIC Vulkan::Headers)
+
+        # Clang 16's module support can be broken with extensions enabled
+        if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_EQUAL "16.0")
+            set_target_properties(Vulkan-HppModule PROPERTIES CXX_EXTENSIONS OFF)
+        endif()
     else()
         message(FATAL_ERROR "Vulkan-Hpp: C++20 module support is requested but was disabled due to lacking compiler support on this platform")
     endif()
